@@ -40,6 +40,20 @@ public class ClientService {
         return new ClientDTO(entity);
     }
 
+    @Transactional
+    public ClientDTO update(ClientDTO dto, Long id){
+        try {
+            Client entity = repository.getOne(id);
+            setEverything(dto, entity);
+            entity = repository.save(entity);
+            return new ClientDTO(entity);
+        }
+        catch (NotFoundException e){
+            throw new NotFoundException("Id not found" + id);
+        }
+
+    }
+
     public void setEverything(ClientDTO dto,Client client){
         client.setBirthDate(dto.getBirthDate());
         client.setChildren(dto.getChildren());
