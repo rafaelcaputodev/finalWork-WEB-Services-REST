@@ -1,5 +1,6 @@
 package com.caputo.finalWork.Controller.exceptions;
 
+import com.caputo.finalWork.Services.Exceptions.DatabaseException;
 import com.caputo.finalWork.Services.Exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,18 @@ public class ResourceExceptionHandler {
         err.setTimestamp(Instant.now());
         err.setStatus(status.value());
         err.setError("ERROR:");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(value = DatabaseException.class)
+    public ResponseEntity<StandardError> entityDatabase(DatabaseException e, HttpServletRequest request){
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Database exception:");
         err.setMessage(e.getMessage());
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);
